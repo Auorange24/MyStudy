@@ -2,23 +2,37 @@ package skiplist
 
 import "math/rand"
 
-type node struct {
-	nexts []*node
-	key, val int
+type Node struct {
+	Nexts []*node
+	Key, Val int
+}
+
+func NewNode(key, value, level int) *Node {
+	var node &Node
+	node.Nexts = make([]*node, level)
+	node.Key = key
+	node.val = value
+	return node
 }
 
 type Skiplist struct {
-    head *node
+    Head *node
 }
+
+func NewSkiplist() *Skiplist {
+	sl := &Skiplist{}
+	sl.head = NewNode(-1, -1, 0 )
+}
+
 
 /*
 将一组key-value写入到有序表中，时间复杂度为O(log(N))
 */
-func (sl *Skiplist) put(key, value int) {
-	head := sl.head
+func (sl *Skiplist) Put(key, value int) {
+	head := sl.Head
 
-	n := node {
-		nexts: make([]*node, calLevel(1)),
+	n := Node {
+		Nexts: make([]*node, calLevel(1)),
 		key: key,
 		val: value,
 	}
