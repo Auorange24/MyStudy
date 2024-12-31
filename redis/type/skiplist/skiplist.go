@@ -1,8 +1,9 @@
 package main
 
 import (
-	"math/rand"
+	"errors"
 	"fmt"
+	"math/rand"
 )
 
 type Node struct {
@@ -20,6 +21,7 @@ func NewNode(key, value, level int) *Node {
 
 type Skiplist struct {
     Head *Node
+	Size int
 }
 
 func NewSkiplist() *Skiplist {
@@ -95,6 +97,71 @@ func (sl *Skiplist) PrintSkipList() {
 func (sl *Skiplist) Get(key int) int {
 	head := sl.Head 
 	for i := len(head.Nexts) - 1 ; i >= 0 ; i -- {
-		for head.Nexts[i] != nil && head.Val < key
+		for head.Nexts[i] != nil && head.Val < key {
+
+		}
 	}
+	return 1
 } 
+
+func (sl *Skiplist) Exist(key int) bool {
+	head := sl.Head
+	for i := len(head.Nexts) ; i >= 0 ; i -- {
+		for head.Nexts[i] != nil && head.Nexts[i].Key < key {
+			head = head.Nexts[i]
+		} 
+		if head.Nexts[i] != nil && head.Nexts[i].Key == key {
+			return true
+		}
+	}
+	return false
+}
+
+// 返回key值最小的KV对
+func (sl *Skiplist) First() (int, int, error) {
+	head := sl.Head
+	if head.Nexts[0] == nil {
+		return -1, -1, errors.New("SKiplist中不存在元素")
+	} else {
+		return head.Nexts[0].Key, head.Nexts[0].Val, nil
+	}
+}
+
+// 返回Key值最大的KV对
+func (sl *Skiplist) Last() (int, int, error) {
+	head := sl.Head
+	if head.Nexts[0] == nil {
+		return -1, -1, errors.New("Skiplist中不存在元素")
+	}
+	for i := len(head.Nexts) - 1 ; i >= 0 ; i -- {
+		for head.Nexts[i] != nil {
+			head = head.Nexts[i]
+		}
+	}
+	return head.Key, head.Val, nil
+}
+
+func (sl *Skiplist) Empty() {
+
+}
+
+// 返回Key值小于Target的最接近的KV键值对
+func (sl *Skiplist) floor(target int) (int, int ,error) {
+	if sl.Size == 0 {
+		return -1, -1, errors.New("Skiplist 为空")
+	}
+	if key, _, _ := sl.First() ; key > target {
+		return -1, -1, errors.New("不存在小于等于target的key")
+	}
+	head := sl.Head
+	for i := len(head.Nexts) - 1 ; i >= 0 ; i -- {
+		for head.Nexts[i] != nil && head.Nexts[i].Key < key {
+			head = head.Nexts[i]
+		}
+		if head.Next[i] != nil {
+			
+		}
+	}
+}
+
+
