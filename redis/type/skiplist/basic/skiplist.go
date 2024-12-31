@@ -141,8 +141,17 @@ func (sl *Skiplist) Last() (int, int, error) {
 	return head.Key, head.Val, nil
 }
 
-func (sl *Skiplist) Empty() {
-
+/*
+判断跳表是否为空
+为空  返回true
+不为空返回false
+*/
+func (sl *Skiplist) Empty() bool {
+	if sl.Head.Nexts[0] == nil {
+		return true
+	} else {
+		return false
+	}
 }
 
 // 返回Key值小于Target的最接近的KV键值对
@@ -164,4 +173,26 @@ func (sl *Skiplist) floor(target int) (int, int ,error) {
 	}
 }
 
+// 返回key值大于等于target 的第一个元素
+func (sl *Skiplist) ceiling(target int) (int, int, error) {
+	// 判断当前跳表是否为空
+	if flag := sl.Empty() ; flag == true {
+		return 0, 0, errors.New("skiplist is empty")
+	}
+	/*
+	判断当前跳表的最大key是否小于target
+	如果小于target，返回error
+	*/
+	if k, _, _ := sl.Last() ; k < target {
+		return 0, 0, errors.New("no return value")
+	}
 
+	// 查询结果
+	head := sl.Head
+	for i := len(head.Nexts) - 1 ; i >= 0 ; i -- {
+		for head.Nexts[i] != nil && head.Nexts[i].Key < target {
+			head = head.Nexts[i]
+		}
+	}
+	return head.Key, head.Val, nil
+}
