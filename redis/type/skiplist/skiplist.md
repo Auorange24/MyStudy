@@ -81,3 +81,56 @@ parent节点的左右高度差距不会超过一倍，也能维持在O(log(N))�
 
 > 粗锁和细锁的区别
 
+## Skiplist的函数实现
+
+### PUT
+
+**个人实现**
+
+```go
+func (sl *Skiplist) Put(key, value int) {
+	head := sl.Head
+	node := NewNode(key, value, calLevel(1))
+	for i := len(head.Nexts) - 1 ; i >= 0 ; i -- {
+		if i >= len(node.Nexts) {
+			continue
+		}
+		for head.Nexts[i] != nil && head.Nexts[i].Key < key {
+			head = head.Nexts[i]
+		}
+		node.Nexts[i] = head.Nexts[i]
+		head.Nexts[i] = node
+	}
+	for i := len(head.Nexts) ; i < len(node.Nexts) ; i ++ {
+		head.Nexts = append(head.Nexts, node)
+	}
+}
+```
+
+> Note: 先更新还是先扩展头节点
+> 先扩展头节点，在更新时可以直接按照新的子节点的高度进行更新
+> 先扩展头节点，Redis源码中使用数组存储了每一层的前驱节点，但是不一样能用来，个人实现需要进行判断
+
+### GET
+
+**个人实现**
+
+```go
+func (sl *Skiplist) Get(key int) (int, error) {
+	// 1. check skiplist is empty
+	if flag := sl.Empty() ; flag {
+		return 0, errors.New("skiplist is empty")
+	}
+	head := sl.Head 
+	for i := len(head.Nexts) - 1 ; i >= 0 ; i -- {
+		for head.Nexts[i] != nil && head.Val < key {
+			head = head.Nexts[i]
+		}
+		if head.Nexts[i] != nil && head.Nexts[i].Key == key {
+			return head.Nexts[i].Val, nil
+		}
+	}
+	return -1, nil
+}
+```
+

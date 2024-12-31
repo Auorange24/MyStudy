@@ -32,9 +32,12 @@ func NewSkiplist() *Skiplist {
 
 
 /*
+Put ToDo:
 将一组key-value写入到有序表中，时间复杂度为O(log(N))
 */
 func (sl *Skiplist) Put(key, value int) {
+	// TODO: 先判断一下KV对是否存在
+
 	// fmt.Println("skipList : ", sl.Head)
 	head := sl.Head
 	node := NewNode(key, value, calLevel(1))
@@ -47,7 +50,7 @@ func (sl *Skiplist) Put(key, value int) {
 			// fmt.Println("执行 continue")
 			continue
 		}
-		for head.Nexts[i] != nil && head.Nexts[i].Val < value {
+		for head.Nexts[i] != nil && head.Nexts[i].Key < key {
 			head = head.Nexts[i]
 		}
 		node.Nexts[i] = head.Nexts[i]
@@ -94,15 +97,45 @@ func (sl *Skiplist) PrintSkipList() {
 	}
 }
 
-func (sl *Skiplist) Get(key int) int {
+// 根据Key获取value的值
+
+func (sl *Skiplist) Get(key int) (int, error) {
+	// 1. check skiplist is empty
+	if flag := sl.Empty() ; flag {
+		return 0, errors.New("skiplist is empty")
+	}
 	head := sl.Head 
 	for i := len(head.Nexts) - 1 ; i >= 0 ; i -- {
 		for head.Nexts[i] != nil && head.Val < key {
-
+			head = head.Nexts[i]
+		}
+		if head.Nexts[i] != nil && head.Nexts[i].Key == key {
+			return head.Nexts[i].Val, nil
 		}
 	}
-	return 1
-} 
+	return -1, nil
+}
+
+func (sl *Skiplist) Del(key int) (int, error) {
+	// check skiplist is empty
+	if flag := sl.Empty() ; flag {
+		return 0, errors.New("Skiplist is empty")
+	}
+	// check key is exist
+	head := sl.Head 
+	for i := len(head.Nexts) - 1 ; i >= 0 ; i -- {
+		for head.Nexts[i] != nil && head.Nexts[i].Key < key {
+			head = head.Nexts[i]
+		}
+		if head.Nexts[i] != nil && head.Nexts[i].Key == key {
+			val := head.Nexts[i].Val
+			head.Nexts[i] = head.Nexts[i].Nexts[i]
+			return val, nil
+		}
+	}
+}
+
+
 
 func (sl *Skiplist) Exist(key int) bool {
 	head := sl.Head
@@ -167,7 +200,7 @@ func (sl *Skiplist) floor(target int) (int, int ,error) {
 		for head.Nexts[i] != nil && head.Nexts[i].Key < key {
 			head = head.Nexts[i]
 		}
-		if head.Next[i] != nil {
+		if head.Nexts[i] != nil {
 			
 		}
 	}
