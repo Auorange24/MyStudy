@@ -63,7 +63,7 @@ func (s *Service) GetProduct() {
 
 func startService() {
 	s := &Service{}
-	if 
+	if s.GetLock
 	s.GetProduct()
 }
 
