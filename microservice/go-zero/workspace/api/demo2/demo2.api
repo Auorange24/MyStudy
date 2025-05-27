@@ -1,0 +1,23 @@
+syntax = "v1"
+
+
+type Request {
+	Name string `path:"name,options=you|me"`
+}
+
+type Response {
+	Message string `json:"message"`
+}
+
+// 创建登录接口
+
+type LoginRequest {
+	// gozero 不接收多个tag
+    Username string `json:"username"`
+	Password string `json:"password"`
+}
+
+type LoginResponse {
+    Token string `json:"token"`
+}
+

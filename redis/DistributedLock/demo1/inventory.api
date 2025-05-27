@@ -1,0 +1,17 @@
+syntax = "proto3";  
+
+package inventory;  
+
+service Inventory {  
+    rpc ReduceStock(ReduceStockRequest) returns (ReduceStockResponse);  
+}  
+
+message ReduceStockRequest {  
+    int64 product_id = 1; // 产品ID  
+    int32 quantity = 2;   // 减少的数量  
+}  
+
+message ReduceStockResponse {  
+    bool success = 1;     // 操作是否成功  
+    string message = 2;   // 返回消息  
+}
