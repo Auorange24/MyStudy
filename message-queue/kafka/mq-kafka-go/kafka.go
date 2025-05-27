@@ -32,3 +32,13 @@ func WriteByConn() {
 		log.Fatal("failed to close writer:", err)
 	}
 }
+
+func ReadByConn() {
+	topic := "my-topic"
+	partition := 0
+
+	conn, err := kafka.DialLeader(context.Background(), "tcp", "localhost:9092", topic, partition)
+	fatalError(err)
+
+	
+}
