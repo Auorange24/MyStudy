@@ -27,6 +27,8 @@
         <module>NettyStudy</module>
         <module>MultipyThreadStudy</module>
         <module>IoStudy</module>
+        <module>Multiply-Programming</module>
+        <module>container</module>
     </modules>
     <scm>
         <connection/>
